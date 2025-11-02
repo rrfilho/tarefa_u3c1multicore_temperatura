@@ -19,6 +19,10 @@ void thread0() {
     }
 }
 
+bool are_temperatures_too_differents(float temperature1, float temperature2) {
+    return abs(temperature1 - temperature2)/1000.f >= 0.4;
+}
+
 void thread1() {
     while (true) {
         unsigned long temperature1 = threads_receive_data_from_zero();
@@ -26,7 +30,7 @@ void thread1() {
         unsigned long temperature2 = threads_receive_data_from_zero();
         display_set_y(temperature2/1000.f);
         leds_off();
-        if (abs(temperature1 - temperature2)/1000.f >= 0.4) leds_set_red(true);
+        if (are_temperatures_too_differents(temperature1, temperature2)) leds_set_red(true);
         else leds_set_green(true);
     }
 }
