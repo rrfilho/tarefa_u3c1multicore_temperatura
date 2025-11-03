@@ -14,10 +14,10 @@ void threads_start() {
     _core0();
 }
 
-void threads_send_data_to_one(unsigned long data) {
+void threads_enqueue(unsigned long data) {
     multicore_fifo_push_blocking(data);
 }
 
-unsigned long threads_receive_data_from_zero() {
+unsigned long threads_dequeue() {
     return multicore_fifo_pop_blocking();
 }

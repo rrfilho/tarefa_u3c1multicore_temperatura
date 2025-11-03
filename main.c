@@ -11,27 +11,26 @@
 
 void thread0() {
     while (true) {
+        leds_set_green(true);
         float temperature;
         temperature = humidity_sensor_temperature_read();
-        threads_send_data_to_one(temperature*1000);
+        threads_enqueue(temperature*1000);
         temperature = pressure_sensor_temperature_read();
-        threads_send_data_to_one(temperature*1000);
+        threads_enqueue(temperature*1000);
+        leds_set_green(false);
     }
-}
-
-bool are_temperatures_too_differents(float temperature1, float temperature2) {
-    return abs(temperature1 - temperature2)/1000.f >= 0.4;
 }
 
 void thread1() {
     while (true) {
-        unsigned long temperature1 = threads_receive_data_from_zero();
+        leds_set_blue(true);
+        sleep_ms(500);
+        unsigned long temperature1 = threads_dequeue();
         display_set_x(temperature1/1000.f);
-        unsigned long temperature2 = threads_receive_data_from_zero();
+        unsigned long temperature2 = threads_dequeue();
         display_set_y(temperature2/1000.f);
-        leds_off();
-        if (are_temperatures_too_differents(temperature1, temperature2)) leds_set_red(true);
-        else leds_set_green(true);
+        leds_set_blue(false);
+        sleep_ms(500);
     }
 }
 
